@@ -11,7 +11,7 @@ class Board extends AStarState<Board> {
 
   // Any fields to represent the state of the board go here
 
-  Board(this.transition);
+  Board({this.transition});
   
   @override
   Iterable<Board> expand() => [
