@@ -2,39 +2,34 @@ import "dart:collection";
 import "package:meta/meta.dart";
 
 import "state.dart";
-import "transition.dart";
 
 @immutable
-class AStarNode<T extends AStarState> implements Comparable<AStarNode<T>> {
+class AStarNode<T extends AStarState<T>> implements Comparable<AStarNode<T>> {
   final String hash;
   final double heuristic;
   final int depth;
   final T state;
-  final AStarTransition<T>? transition;
+  final AStarNode<T>? parent;
 
-  AStarNode(this.state, {required this.depth, this.transition}) : 
+  AStarNode(this.state, {required this.depth, this.parent}) : 
     hash = state.hash(),
     heuristic = state.heuristic();
 
   double get cost => depth + heuristic;
 
-  Iterable<AStarTransition<T>> reconstructPath() {
-    final path = Queue<AStarTransition<T>>();
-    var current = transition;
+  Iterable<AStarNode<T>> reconstructPath() {
+    final path = Queue<AStarNode<T>>();
+    var current = parent;
     while (current != null) {
       path.addFirst(current);
-      current = current.parent.transition;
+      current = current.parent;
     }
     return path;
   }
 
   Iterable<AStarNode<T>> expand() sync* {
-    for (final (state, transition) in state.expand(this)) {
-      yield AStarNode(
-        state as T, 
-        depth: depth + 1,
-        transition: transition as AStarTransition<T>,
-      );
+    for (final newState in state.expand()) {
+      yield AStarNode(newState, parent: this, depth: depth + 1);
     }
   }
 

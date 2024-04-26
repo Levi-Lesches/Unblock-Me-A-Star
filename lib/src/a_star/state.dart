@@ -1,14 +1,12 @@
-import "node.dart";
-import "transition.dart";
-
-class AStarStep<T extends AStarState> {
+class AStarStep<T extends AStarState<T>> {
   final T state;
   const AStarStep(this.state);
 }
 
-abstract class AStarState {
+abstract class AStarState<T extends AStarState<T>> {
+  Object? transition;
   double heuristic();
   String hash();
-  Iterable<(AStarState, AStarTransition)> expand(AStarNode node); 
+  Iterable<T> expand(); 
   bool isGoal();
 }

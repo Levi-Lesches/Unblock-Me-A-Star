@@ -5,7 +5,7 @@ import "package:collection/collection.dart";
 import "node.dart";
 import "state.dart";
 
-AStarNode<T>? aStar<T extends AStarState>(T state, {bool verbose = false, int limit = 1000}) {
+AStarNode<T>? aStar<T extends AStarState<T>>(T state, {bool verbose = false, int limit = 1000}) {
   final startNode = AStarNode(state, depth: 0);
   final opened = <AStarNode<T>>{startNode};
   final closed = <AStarNode<T>>{};
