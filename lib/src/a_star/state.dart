@@ -4,7 +4,7 @@ class AStarStep<T extends AStarState<T>> {
 }
 
 abstract class AStarState<T extends AStarState<T>> {
-  Object? transition;
+  Object? get transition;
   double heuristic();
   String hash();
   Iterable<T> expand(); 
