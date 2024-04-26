@@ -8,7 +8,7 @@ class HomeModel extends ViewModel {
   /// The title of the app.
   final String title = "Home";
 
-  final state = Board();
+  final state = Board.test();
 
   void run() => aStar(state);
 }
