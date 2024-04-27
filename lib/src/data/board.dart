@@ -80,47 +80,54 @@ class Board extends AStarState<Board> {
     return result;
   }
 
+  /// Checks if coordinate is empty and in bounds on the board
   bool isAvailable(Coordinate coordinate) => coordinate.x >= 0 
     && coordinate.y >= 0
     && coordinate.x < size
     && coordinate.y < size
     && !blockMatrix[coordinate.y][coordinate.x]; 
 
+  /// All possible moves from a state
   @override
   Iterable<Board> expand() sync* {
+    int spaces;
     for (final (index, block) in (blocks + [redBlock]).enumerate) {
-      if (isAvailable(block.behind)) {
+      spaces = 1;
+      while (isAvailable(block.spacesBehind(spaces))){
         final result = copy();
-        result.moveBack(index);
+        result.moveBack(index, spaces);
         result.transition = BoardTransition(
           block: index == blocks.length ? "Red block" : "Block $index",
-          numSpaces: 1,
+          numSpaces: spaces,
           direction: "backward",  // TODO: Up/Left
         );
+        spaces++;
         yield result;
       }
-      if (isAvailable(block.ahead)) {
+      spaces = 1; 
+      while (isAvailable(block.spacesAhead(spaces))) {
         final result = copy();
-        result.moveForward(index);
+        result.moveForward(index, spaces);
         result.transition = BoardTransition(
           block: index == blocks.length ? "Red block" : "Block $index",
-          numSpaces: 1,
+          numSpaces: spaces,
           direction: "forward",  // TODO: Down/Right
         );
+        spaces++;
         yield result;
       }
     }
   }
 
-  void moveBack(int index) {
+  void moveBack(int index, int spaces) {
     final block = index == size ? redBlock : blocks[index];
-    block.start = block.behind;
+    block.start = block.spacesBehind(spaces);
     blockMatrix = computeMatrix();
   }
 
-  void moveForward(int index) {
+  void moveForward(int index, int spaces) {
     final block = index == size ? redBlock : blocks[index];
-    block.start = block.oneForward;
+    block.start = block.spacesForward(spaces);
     blockMatrix = computeMatrix();
   }
 

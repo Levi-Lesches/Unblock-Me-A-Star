@@ -41,5 +41,20 @@ class Block {
     BlockAxis.vertical => (x: start.x, y: start.y + 1),
   };
 
+  Coordinate spacesAhead(int spaces) => switch (axis) {
+    BlockAxis.horizontal => (x: start.x + length + (spaces - 1), y: start.y),
+    BlockAxis.vertical => (x: start.x, y: start.y + length + (spaces - 1)),
+  };
+
+  Coordinate spacesBehind(int spaces) => switch (axis) {
+    BlockAxis.horizontal => (x: start.x - spaces, y: start.y),
+    BlockAxis.vertical => (x: start.x, y: start.y - spaces),
+  };
+
+   Coordinate spacesForward(int spaces) => switch (axis) {
+    BlockAxis.horizontal => (x: start.x + spaces, y: start.y),
+    BlockAxis.vertical => (x: start.x, y: start.y + spaces),
+  };
+
   Block copy() => Block(axis: axis, length: length, start: start);
 }
