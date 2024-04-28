@@ -26,26 +26,6 @@ class Block {
     ],
   };
 
-  Coordinate get behind => switch (axis) {
-    BlockAxis.horizontal => (x: start.x - 1, y: start.y),
-    BlockAxis.vertical => (x: start.x, y: start.y - 1),
-  };
-
-  Coordinate get ahead => switch (axis) {
-    BlockAxis.horizontal => (x: start.x + length, y: start.y),
-    BlockAxis.vertical => (x: start.x, y: start.y + length),
-  };
-
-  Coordinate get oneForward => switch (axis) {
-    BlockAxis.horizontal => (x: start.x + 1, y: start.y),
-    BlockAxis.vertical => (x: start.x, y: start.y + 1),
-  };
-
-  Coordinate spacesAhead(int spaces) => switch (axis) {
-    BlockAxis.horizontal => (x: start.x + length + (spaces - 1), y: start.y),
-    BlockAxis.vertical => (x: start.x, y: start.y + length + (spaces - 1)),
-  };
-
   Coordinate spacesBehind(int spaces) => switch (axis) {
     BlockAxis.horizontal => (x: start.x - spaces, y: start.y),
     BlockAxis.vertical => (x: start.x, y: start.y - spaces),
