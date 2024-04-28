@@ -5,7 +5,8 @@ import "package:unblock/widgets.dart";
 
 class BoardWidget extends StatelessWidget {
   final Board board;
-  const BoardWidget(this.board);
+  final void Function(int, int) onMove;
+  const BoardWidget({required this.board, required this.onMove});
 
   @override
   Widget build(BuildContext context) => AspectRatio(
@@ -13,20 +14,37 @@ class BoardWidget extends StatelessWidget {
     child: LayoutBuilder(
       builder:(context, constraints) => Stack(
         children: [
-          // All the blocks on the board
-          for (final block in board.blocks)
-            BlockWidget(block: block, boardSize: board.size, constraints: constraints),
-          // The red block
-          BlockWidget(block: board.redBlock, boardSize: board.size, isRed: true, constraints: constraints,),
           // The background grid
           GridView.count(
+            physics: const NeverScrollableScrollPhysics(),
             crossAxisCount: board.size,
             children: [
               for (int i = 0; i < board.size; i++)
-                for (int j = 0; j < board.size; j++) Container(
-                  decoration: BoxDecoration(border: Border.all(width: 0.25)),
+                for (int j = 0; j < board.size; j++) DragTarget(
+                  onWillAcceptWithDetails: (data) => true,
+                  builder:(context, candidateData, rejectedData) => Container(
+                    decoration: BoxDecoration(
+                      border: Border.all(width: 0.25),
+                      color: board.exit.x == j && board.exit.y == i ? Colors.green : null,
+                    ),
+                  ),
                 ),
             ],
+          ),
+          // All the blocks on the board
+          for (final (index, block) in board.blocks.enumerate) BlockWidget(
+            block: block, 
+            boardSize: board.size, 
+            constraints: constraints,
+            onMove: (spaces) => onMove(index, spaces),
+          ),
+          // The red block
+          BlockWidget(
+            block: board.redBlock, 
+            boardSize: board.size, 
+            isRed: true, 
+            constraints: constraints,
+            onMove: (spaces) => onMove(board.blocks.length, spaces),
           ),
       ],),
     ),
