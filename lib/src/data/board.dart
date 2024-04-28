@@ -27,16 +27,13 @@ class Board extends AStarState<Board> {
   final List<Block> blocks;
   final Block redBlock;
   final Coordinate exit;
-  late List<List<bool>> blockMatrix;
 
   Board({
     required this.blocks,
     required this.redBlock, 
     required this.exit,
     required this.size,
-  }) {
-    blockMatrix = computeMatrix();
-  }
+  });
 
   Board copy() => Board(
     blocks: [
@@ -63,22 +60,6 @@ class Board extends AStarState<Board> {
     size: 6,
     exit: (x: 5, y: 2),
   );
-
-  List<List<bool>> computeMatrix() {
-    // Don't care about the red block in here
-    final result = <List<bool>>[
-      for (int i = 0; i < size; i++) [
-        for (int j = 0; j < size; j++) 
-          false,
-      ],
-    ];
-    for (final block in blocks) {
-      for (final (:x, :y) in block.coordinates) {
-        result[y][x] = true;  // remember, y is rows
-      }
-    }
-    return result;
-  }
 
   /// Checks if coordinate is empty and in bounds on the board
   bool isInBounds(Coordinate coordinate) => coordinate.x >= 0 
@@ -135,13 +116,11 @@ class Board extends AStarState<Board> {
   void moveBack(int index, int spaces) {
     final block = index == blocks.length ? redBlock : blocks[index];
     block.start = block.spacesBehind(spaces);
-    blockMatrix = computeMatrix();
   }
 
   void moveForward(int index, int spaces) {
     final block = index == blocks.length ? redBlock : blocks[index];
     block.start = block.spacesForward(spaces);
-    blockMatrix = computeMatrix();
   }
 
   @override
