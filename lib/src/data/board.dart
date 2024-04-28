@@ -81,20 +81,19 @@ class Board extends AStarState<Board> {
   }
 
   /// Checks if coordinate is empty and in bounds on the board
-  bool isAvailable(Coordinate coordinate) => coordinate.x >= 0 
+  bool isInBounds(Coordinate coordinate) => coordinate.x >= 0 
     && coordinate.y >= 0
     && coordinate.x < size
-    && coordinate.y < size
-    && !blockMatrix[coordinate.y][coordinate.x]; 
+    && coordinate.y < size;
 
   /// All possible moves from a state
   @override
   Iterable<Board> expand() sync* {
     int spaces;
     final allBlocks = blocks + [redBlock];
-    for (final (index, block) in allBlocks.enumerate) {
+    for (final (index, _) in allBlocks.enumerate) {
       spaces = 1;
-      while (isAvailable(block.spacesBehind(spaces))){
+      while (canMove(index, -spaces)) {
         final result = copy();
         result.moveBack(index, spaces);
         result.transition = BoardTransition(
@@ -106,7 +105,7 @@ class Board extends AStarState<Board> {
         yield result;
       }
       spaces = 1; 
-      while (isAvailable(block.spacesAhead(spaces))) {
+      while (canMove(index, spaces)) {
         final result = copy();
         result.moveForward(index, spaces);
         result.transition = BoardTransition(
@@ -118,6 +117,19 @@ class Board extends AStarState<Board> {
         yield result;
       }
     }
+  }
+
+  bool canMove(int index, int spaces) {
+    final block = index == blocks.length ? redBlock : blocks[index];
+    for (final coordinate in block.allSpacesOffset(spaces)) {
+      if (!isInBounds(coordinate)) return false;
+      if (block != redBlock && redBlock.coordinates.contains(coordinate)) return false;
+      for (final (otherIndex, otherBlock) in blocks.enumerate) {
+        if (index == otherIndex) continue;
+        if (otherBlock.coordinates.contains(coordinate)) return false;
+      }
+    }
+    return true;
   }
 
   void moveBack(int index, int spaces) {

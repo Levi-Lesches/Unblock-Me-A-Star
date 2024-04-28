@@ -51,7 +51,7 @@ class Block {
     BlockAxis.vertical => (x: start.x, y: start.y - spaces),
   };
 
-   Coordinate spacesForward(int spaces) => switch (axis) {
+  Coordinate spacesForward(int spaces) => switch (axis) {
     BlockAxis.horizontal => (x: start.x + spaces, y: start.y),
     BlockAxis.vertical => (x: start.x, y: start.y + spaces),
   };
@@ -64,6 +64,18 @@ class Block {
   double get height => switch (axis) {
     BlockAxis.horizontal => 1.0,
     BlockAxis.vertical => length.toDouble(),
+  };
+
+  Iterable<Coordinate> allSpacesOffset(int steps) => switch (axis) {
+    BlockAxis.horizontal => [
+      for (final (:x, :y) in coordinates)
+        (x: x + steps, y: y),
+    ],
+    BlockAxis.vertical => [
+      for (final (:x, :y) in coordinates)
+        (x: x, y: y + steps),
+    ],
+
   };
 
   Block copy() => Block(axis: axis, length: length, start: start);
