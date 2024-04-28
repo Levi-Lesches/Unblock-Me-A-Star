@@ -138,5 +138,5 @@ class Board extends AStarState<Board> {
   double heuristic() => 0;
 
   @override
-  bool isGoal() => redBlock.coordinates.last == exit;
+  bool isGoal() => redBlock.coordinates.contains(exit);
 }
