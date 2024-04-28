@@ -91,7 +91,8 @@ class Board extends AStarState<Board> {
   @override
   Iterable<Board> expand() sync* {
     int spaces;
-    for (final (index, block) in (blocks + [redBlock]).enumerate) {
+    final allBlocks = blocks + [redBlock];
+    for (final (index, block) in allBlocks.enumerate) {
       spaces = 1;
       while (isAvailable(block.spacesBehind(spaces))){
         final result = copy();

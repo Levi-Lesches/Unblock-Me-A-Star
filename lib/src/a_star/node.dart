@@ -19,6 +19,7 @@ class AStarNode<T extends AStarState<T>> implements Comparable<AStarNode<T>> {
 
   Iterable<AStarNode<T>> reconstructPath() {
     final path = Queue<AStarNode<T>>();
+    path.addFirst(this);
     var current = parent;
     while (current != null) {
       path.addFirst(current);
