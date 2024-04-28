@@ -3,6 +3,8 @@ import "package:flutter/material.dart";
 export "package:go_router/go_router.dart";
 
 export "src/widgets/generic/reactive_widget.dart";
+export "src/widgets/atomic/block.dart";
+export "src/widgets/atomic/board.dart";
 
 /// Helpful methods on [BuildContext].
 extension ContextUtils on BuildContext {

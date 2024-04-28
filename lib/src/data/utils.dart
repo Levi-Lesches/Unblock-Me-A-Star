@@ -24,3 +24,10 @@ extension ListUtils<E> on List<E> {
     }
   }
 }
+
+List<int> range(int start, int stop) => start < stop
+  ? [
+    for (var i = start; i < stop; i++) i,
+  ] : [
+    for (var i = start; i > stop; i--) i,
+  ];

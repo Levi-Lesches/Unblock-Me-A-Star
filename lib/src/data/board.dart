@@ -27,16 +27,13 @@ class Board extends AStarState<Board> {
   final List<Block> blocks;
   final Block redBlock;
   final Coordinate exit;
-  late List<List<bool>> blockMatrix;
 
   Board({
     required this.blocks,
     required this.redBlock, 
     required this.exit,
     required this.size,
-  }) {
-    blockMatrix = computeMatrix();
-  }
+  });
 
   Board copy() => Board(
     blocks: [
@@ -64,72 +61,56 @@ class Board extends AStarState<Board> {
     exit: (x: 5, y: 2),
   );
 
-  List<List<bool>> computeMatrix() {
-    // Don't care about the red block in here
-    final result = <List<bool>>[
-      for (int i = 0; i < size; i++) [
-        for (int j = 0; j < size; j++) 
-          false,
-      ],
-    ];
-    for (final block in blocks) {
-      for (final (:x, :y) in block.coordinates) {
-        result[y][x] = true;  // remember, y is rows
-      }
-    }
-    return result;
-  }
-
   /// Checks if coordinate is empty and in bounds on the board
-  bool isAvailable(Coordinate coordinate) => coordinate.x >= 0 
+  bool isInBounds(Coordinate coordinate) => coordinate.x >= 0 
     && coordinate.y >= 0
     && coordinate.x < size
-    && coordinate.y < size
-    && !blockMatrix[coordinate.y][coordinate.x]; 
+    && coordinate.y < size;
 
-  /// All possible moves from a state
   @override
   Iterable<Board> expand() sync* {
-    int spaces;
+    // For all blocks...
     final allBlocks = blocks + [redBlock];
     for (final (index, block) in allBlocks.enumerate) {
-      spaces = 1;
-      while (isAvailable(block.spacesBehind(spaces))){
+      // For all possible offsets...
+      final forward = range(-1, -size);
+      final backward = range(1, size);
+      for (final spaces in forward + backward) {
+        // Try to move the block by that many spaces
+        if (!canMove(index, spaces)) continue;
         final result = copy();
-        result.moveBack(index, spaces);
+        result.moveBlock(index, spaces);
         result.transition = BoardTransition(
-          block: index == blocks.length ? "Red block" : "Block $index",
-          numSpaces: spaces,
-          direction: "backward",  // TODO: Up/Left
+          block: index == blocks.length ? "the red block" : "block $index",
+          numSpaces: spaces.abs(),
+          direction: block.getDirection(spaces),
         );
-        spaces++;
-        yield result;
-      }
-      spaces = 1; 
-      while (isAvailable(block.spacesAhead(spaces))) {
-        final result = copy();
-        result.moveForward(index, spaces);
-        result.transition = BoardTransition(
-          block: index == blocks.length ? "Red block" : "Block $index",
-          numSpaces: spaces,
-          direction: "forward",  // TODO: Down/Right
-        );
-        spaces++;
         yield result;
       }
     }
   }
 
-  void moveBack(int index, int spaces) {
-    final block = index == blocks.length ? redBlock : blocks[index];
-    block.start = block.spacesBehind(spaces);
-    blockMatrix = computeMatrix();
+  bool canMove(int index, int spaces) {
+    final block = getBlock(index);
+    final steps = spaces > 0 ? range(1, spaces + 1) : range(-1, spaces - 1);
+    for (final step in steps) {
+      for (final coordinate in block.allSpacesOffset(step)) {
+        if (!isInBounds(coordinate)) return false;
+        if (block != redBlock && redBlock.coordinates.contains(coordinate)) return false;
+        for (final (otherIndex, otherBlock) in blocks.enumerate) {
+          if (index == otherIndex) continue;
+          if (otherBlock.coordinates.contains(coordinate)) return false;
+        }
+      }
+    }
+    return true;
   }
 
-  void moveForward(int index, int spaces) {
-    final block = index == blocks.length ? redBlock : blocks[index];
-    block.start = block.spacesForward(spaces);
-    blockMatrix = computeMatrix();
+  Block getBlock(int index) => index == blocks.length ? redBlock : blocks[index];
+
+  void moveBlock(int index, int spaces) {
+    final block = getBlock(index);
+    block.start = block.startOffset(spaces);
   }
 
   @override
@@ -159,5 +140,5 @@ class Board extends AStarState<Board> {
   double heuristic() => 0;
 
   @override
-  bool isGoal() => redBlock.oneForward == exit;
+  bool isGoal() => redBlock.coordinates.contains(exit);
 }
