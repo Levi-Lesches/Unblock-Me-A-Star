@@ -91,7 +91,7 @@ class Board extends AStarState<Board> {
   }
 
   bool canMove(int index, int spaces) {
-    final block = index == blocks.length ? redBlock : blocks[index];
+    final block = getBlock(index);
     final steps = spaces > 0 ? range(1, spaces + 1) : range(-1, spaces - 1);
     for (final step in steps) {
       for (final coordinate in block.allSpacesOffset(step)) {
@@ -106,8 +106,10 @@ class Board extends AStarState<Board> {
     return true;
   }
 
+  Block getBlock(int index) => index == blocks.length ? redBlock : blocks[index];
+
   void moveBlock(int index, int spaces) {
-    final block = index == blocks.length ? redBlock : blocks[index];
+    final block = getBlock(index);
     block.start = block.startOffset(spaces);
   }
 

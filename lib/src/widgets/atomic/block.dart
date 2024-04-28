@@ -1,20 +1,27 @@
 import "package:flutter/material.dart";
+
 import "package:unblock/data.dart";
-import "package:unblock/src/data/block.dart";
+import "package:unblock/models.dart";
 
 class BlockWidget extends StatelessWidget {
   final Block block;
   final bool isRed; 
   final int boardSize;
   final ValueChanged<int> onMove;
+  final ValueChanged<int> onPretendMove;
+  final Drag drag;
   final BoxConstraints constraints;
   final double blockSize;
+  final bool isPretend;
   BlockWidget({
     required this.block,
     required this.boardSize,
     required this.onMove,
+    required this.onPretendMove,
     required this.constraints,
+    required this.drag,
     this.isRed = false,
+    this.isPretend = false,
   }) : blockSize = constraints.maxHeight / boardSize;
 
   double get padding => 16;
@@ -29,14 +36,24 @@ class BlockWidget extends StatelessWidget {
     ),
   );
 
-  void onDrag(DraggableDetails details) {
-    final currentOffset = Offset(blockSize * block.start.x, blockSize * block.start.y);
+  void onDragEnd() {
     final offset = switch (block.axis) {
-      BlockAxis.horizontal => details.offset.dx - currentOffset.dx,
-      BlockAxis.vertical => details.offset.dy - currentOffset.dy,
-     };
+      BlockAxis.horizontal => drag.currentOffset.dx,
+      BlockAxis.vertical => drag.currentOffset.dy,
+    }; 
     final spaces = (offset / blockSize).round();
     onMove(spaces);
+    drag.clear();
+  }
+
+  void onDragUpdate(DragUpdateDetails details) {
+    drag.currentOffset += details.delta;
+    final offset = switch (block.axis) {
+      BlockAxis.horizontal => drag.currentOffset.dx,
+      BlockAxis.vertical => drag.currentOffset.dy,
+    };
+    drag.spaces = (offset / blockSize).round();
+    onPretendMove(drag.spaces);
   }
 
   @override
@@ -45,14 +62,20 @@ class BlockWidget extends StatelessWidget {
     left: blockSize * block.start.x + padding / 2,
     child: Draggable(
       data: block,
-      onDragEnd: onDrag,
+      onDragStarted: drag.clear,
+      onDragEnd: (_) => onDragEnd(),
+      onDragUpdate: onDragUpdate,
+      maxSimultaneousDrags: isPretend ? 0 : null,
       feedback: blockWidget,
       axis: switch (block.axis) {
         BlockAxis.horizontal => Axis.horizontal,
         BlockAxis.vertical => Axis.vertical,
       },
-      childWhenDragging: Opacity(opacity: 0.5, child: blockWidget),
-      child: blockWidget,
+      childWhenDragging: Container(),
+      child: Opacity(
+        opacity: isPretend ? 0.5 : 1,
+        child: blockWidget,
+      ),
     ),
   );
 }

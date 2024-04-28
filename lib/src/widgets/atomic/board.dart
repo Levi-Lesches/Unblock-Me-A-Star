@@ -1,12 +1,14 @@
 import "package:flutter/material.dart";
 
 import "package:unblock/data.dart";
+import "package:unblock/models.dart";
 import "package:unblock/widgets.dart";
 
 class BoardWidget extends StatelessWidget {
-  final Board board;
-  final void Function(int, int) onMove;
-  const BoardWidget({required this.board, required this.onMove});
+  final HomeModel model;
+  const BoardWidget(this.model);
+
+  Board get board => model.state;
 
   @override
   Widget build(BuildContext context) => AspectRatio(
@@ -36,7 +38,9 @@ class BoardWidget extends StatelessWidget {
             block: block, 
             boardSize: board.size, 
             constraints: constraints,
-            onMove: (spaces) => onMove(index, spaces),
+            onMove: (spaces) => model.onMove(index, spaces),
+            onPretendMove: (spaces) => model.onPretendMove(index, spaces),
+            drag: model.drag,
           ),
           // The red block
           BlockWidget(
@@ -44,7 +48,18 @@ class BoardWidget extends StatelessWidget {
             boardSize: board.size, 
             isRed: true, 
             constraints: constraints,
-            onMove: (spaces) => onMove(board.blocks.length, spaces),
+            onMove: (spaces) => model.onMove(board.blocks.length, spaces),
+            onPretendMove: (spaces) => model.onPretendMove(board.blocks.length, spaces),
+            drag: model.drag,
+          ),
+          if (model.pretendBlock != null) BlockWidget(
+            block: model.pretendBlock!, 
+            boardSize: board.size, 
+            isPretend: true,
+            constraints: constraints,
+            onMove: (spaces) => model.onMove(board.blocks.length, spaces),
+            onPretendMove: (spaces) => model.onPretendMove(board.blocks.length, spaces),
+            drag: model.drag,
           ),
       ],),
     ),

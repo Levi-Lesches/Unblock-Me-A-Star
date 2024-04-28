@@ -13,7 +13,7 @@ class HomePage extends ReactiveWidget<HomeModel> {
     appBar: AppBar(title: Text(model.title)),
     body: Column(
       children: [
-        BoardWidget(board: model.state, onMove: model.onMove),
+        BoardWidget(model),
         const SizedBox(height: 24),
         if (model.state.isGoal()) ...[
           Text("You won!", style: context.textTheme.headlineLarge),
