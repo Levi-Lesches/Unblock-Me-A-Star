@@ -26,12 +26,12 @@ class Block {
     ],
   };
 
-  Coordinate spacesBehind(int spaces) => switch (axis) {
-    BlockAxis.horizontal => (x: start.x - spaces, y: start.y),
-    BlockAxis.vertical => (x: start.x, y: start.y - spaces),
+  String getDirection(int spaces) => switch (axis) {
+    BlockAxis.horizontal => spaces > 0 ? "right" : "left",
+    BlockAxis.vertical => spaces > 0 ? "down" : "up",
   };
 
-  Coordinate spacesForward(int spaces) => switch (axis) {
+  Coordinate startOffset(int spaces) => switch (axis) {
     BlockAxis.horizontal => (x: start.x + spaces, y: start.y),
     BlockAxis.vertical => (x: start.x, y: start.y + spaces),
   };

@@ -14,11 +14,7 @@ class HomeModel extends ViewModel {
 
   void onMove(int index, int spaces) {
     if (!state.canMove(index, spaces)) return;
-    if (spaces > 0) {
-      state.moveForward(index, spaces);
-    } else if (spaces < 0) {
-      state.moveBack(index, spaces.abs());
-    }
+    state.moveBlock(index, spaces);
     notifyListeners();
   }
 }

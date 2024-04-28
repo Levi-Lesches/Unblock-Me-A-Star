@@ -67,34 +67,24 @@ class Board extends AStarState<Board> {
     && coordinate.x < size
     && coordinate.y < size;
 
-  /// All possible moves from a state
   @override
   Iterable<Board> expand() sync* {
-    int spaces;
+    // For all blocks...
     final allBlocks = blocks + [redBlock];
-    for (final (index, _) in allBlocks.enumerate) {
-      spaces = 1;
-      while (canMove(index, -spaces)) {
+    for (final (index, block) in allBlocks.enumerate) {
+      // For all possible offsets...
+      final forward = range(-1, -size);
+      final backward = range(1, size);
+      for (final spaces in forward + backward) {
+        // Try to move the block by that many spaces
+        if (!canMove(index, spaces)) continue;
         final result = copy();
-        result.moveBack(index, spaces);
+        result.moveBlock(index, spaces);
         result.transition = BoardTransition(
-          block: index == blocks.length ? "Red block" : "Block $index",
-          numSpaces: spaces,
-          direction: "backward",  // TODO: Up/Left
+          block: index == blocks.length ? "the red block" : "block $index",
+          numSpaces: spaces.abs(),
+          direction: block.getDirection(spaces),
         );
-        spaces++;
-        yield result;
-      }
-      spaces = 1; 
-      while (canMove(index, spaces)) {
-        final result = copy();
-        result.moveForward(index, spaces);
-        result.transition = BoardTransition(
-          block: index == blocks.length ? "Red block" : "Block $index",
-          numSpaces: spaces,
-          direction: "forward",  // TODO: Down/Right
-        );
-        spaces++;
         yield result;
       }
     }
@@ -102,25 +92,23 @@ class Board extends AStarState<Board> {
 
   bool canMove(int index, int spaces) {
     final block = index == blocks.length ? redBlock : blocks[index];
-    for (final coordinate in block.allSpacesOffset(spaces)) {
-      if (!isInBounds(coordinate)) return false;
-      if (block != redBlock && redBlock.coordinates.contains(coordinate)) return false;
-      for (final (otherIndex, otherBlock) in blocks.enumerate) {
-        if (index == otherIndex) continue;
-        if (otherBlock.coordinates.contains(coordinate)) return false;
+    final steps = spaces > 0 ? range(1, spaces + 1) : range(-1, spaces - 1);
+    for (final step in steps) {
+      for (final coordinate in block.allSpacesOffset(step)) {
+        if (!isInBounds(coordinate)) return false;
+        if (block != redBlock && redBlock.coordinates.contains(coordinate)) return false;
+        for (final (otherIndex, otherBlock) in blocks.enumerate) {
+          if (index == otherIndex) continue;
+          if (otherBlock.coordinates.contains(coordinate)) return false;
+        }
       }
     }
     return true;
   }
 
-  void moveBack(int index, int spaces) {
+  void moveBlock(int index, int spaces) {
     final block = index == blocks.length ? redBlock : blocks[index];
-    block.start = block.spacesBehind(spaces);
-  }
-
-  void moveForward(int index, int spaces) {
-    final block = index == blocks.length ? redBlock : blocks[index];
-    block.start = block.spacesForward(spaces);
+    block.start = block.startOffset(spaces);
   }
 
   @override
