@@ -38,6 +38,8 @@ class HomeModel extends ViewModel {
   Block? pretendBlock;
   void onPretendMove(int index, int spaces) {
     pretendBlock = state.getBlock(index).copy();
+    notifyListeners();
+    if (!state.canMove(index, spaces)) return;
     pretendBlock!.start = pretendBlock!.startOffset(spaces);
     notifyListeners();
   }
