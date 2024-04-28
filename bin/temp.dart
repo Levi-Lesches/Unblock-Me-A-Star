@@ -22,7 +22,7 @@ void main() {
   // Print the moves to win
   print("--------------");
   for (final node in solution.reconstructPath()) {
-    final move = node.state.transition;
+    final move = node.transition;
     if (move == null) continue;
     print(move);
   }

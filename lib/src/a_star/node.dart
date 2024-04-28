@@ -10,6 +10,7 @@ class AStarNode<T extends AStarState<T>> implements Comparable<AStarNode<T>> {
   final int depth;
   final T state;
   final AStarNode<T>? parent;
+  Object? get transition => state.transition;
 
   AStarNode(this.state, {required this.depth, this.parent}) : 
     hash = state.hash(),
