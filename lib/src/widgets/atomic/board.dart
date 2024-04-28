@@ -10,23 +10,25 @@ class BoardWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) => AspectRatio(
     aspectRatio: 1,
-    child: Stack(children: [
-      // The background grid
-      GridView.count(
-        crossAxisCount: board.size,
+    child: LayoutBuilder(
+      builder:(context, constraints) => Stack(
         children: [
-          for (int i = 0; i < board.size; i++)
-            for (int j = 0; j < board.size; j++)
-              Container(
-                decoration: BoxDecoration(border: Border.all()),
-              ),
-        ],
-      ),
-      // All the blocks on the board
-      for (final block in board.blocks)
-        BlockWidget(block: block, boardSize: board.size),
-      // The red block
-      BlockWidget(block: board.redBlock, boardSize: board.size, isRed: true),
-    ],),
+          // All the blocks on the board
+          for (final block in board.blocks)
+            BlockWidget(block: block, boardSize: board.size, constraints: constraints),
+          // The red block
+          BlockWidget(block: board.redBlock, boardSize: board.size, isRed: true, constraints: constraints,),
+          // The background grid
+          GridView.count(
+            crossAxisCount: board.size,
+            children: [
+              for (int i = 0; i < board.size; i++)
+                for (int j = 0; j < board.size; j++) Container(
+                  decoration: BoxDecoration(border: Border.all(width: 0.25)),
+                ),
+            ],
+          ),
+      ],),
+    ),
   );
 }

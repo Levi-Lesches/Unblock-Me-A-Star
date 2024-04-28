@@ -56,5 +56,15 @@ class Block {
     BlockAxis.vertical => (x: start.x, y: start.y + spaces),
   };
 
+  double get width => switch (axis) {
+    BlockAxis.horizontal => length.toDouble(),
+    BlockAxis.vertical => 1.0,
+  };
+
+  double get height => switch (axis) {
+    BlockAxis.horizontal => 1.0,
+    BlockAxis.vertical => length.toDouble(),
+  };
+
   Block copy() => Block(axis: axis, length: length, start: start);
 }

@@ -5,20 +5,26 @@ class BlockWidget extends StatelessWidget {
   final Block block;
   final bool isRed; 
   final int boardSize;
-  const BlockWidget({
+  final double blockSize;
+  BlockWidget({
     required this.block,
     required this.boardSize,
+    required BoxConstraints constraints,
     this.isRed = false,
-  });
+  }) : blockSize = constraints.maxHeight / boardSize;
 
   @override
-  Widget build(BuildContext context) => Align(
-    alignment: FractionalOffset(
-      block.start.x / boardSize, 
-      block.start.y / boardSize, 
+  Widget build(BuildContext context) => Positioned(
+    top: blockSize * block.start.y,
+    left: blockSize * block.start.x,
+    width: block.width * blockSize,
+    height: block.height * blockSize,
+    child: Container(
+      margin: const EdgeInsets.all(2),
+      decoration: BoxDecoration(
+        color: isRed ? Colors.red : Colors.brown,
+        border: Border.all(width: 4),
+      ),
     ),
-    widthFactor: block.axis == BlockAxis.horizontal ? block.length.toDouble() : null,
-    heightFactor: block.axis == BlockAxis.vertical ? block.length.toDouble() : null,
-    child: ColoredBox(color: isRed ? Colors.red : Colors.brown),
   );
 }

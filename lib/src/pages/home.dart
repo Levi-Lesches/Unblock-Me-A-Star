@@ -11,6 +11,6 @@ class HomePage extends ReactiveWidget<HomeModel> {
   @override
   Widget build(BuildContext context, HomeModel model) => Scaffold(
     appBar: AppBar(title: Text(model.title)),
-    body: Container(),
+    body: BoardWidget(model.state),
   );
 }
