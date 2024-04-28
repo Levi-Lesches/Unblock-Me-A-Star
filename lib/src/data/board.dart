@@ -120,13 +120,13 @@ class Board extends AStarState<Board> {
   }
 
   void moveBack(int index, int spaces) {
-    final block = index == size ? redBlock : blocks[index];
+    final block = index == blocks.length ? redBlock : blocks[index];
     block.start = block.spacesBehind(spaces);
     blockMatrix = computeMatrix();
   }
 
   void moveForward(int index, int spaces) {
-    final block = index == size ? redBlock : blocks[index];
+    final block = index == blocks.length ? redBlock : blocks[index];
     block.start = block.spacesForward(spaces);
     blockMatrix = computeMatrix();
   }
