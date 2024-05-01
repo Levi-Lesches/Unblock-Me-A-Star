@@ -10,7 +10,6 @@ class AStarNode<T extends AStarState<T>> implements Comparable<AStarNode<T>> {
   final int depth;
   final T state;
   final AStarNode<T>? parent;
-  Object? get transition => state.transition;
 
   AStarNode(this.state, {required this.depth, this.parent}) : 
     hash = state.hash(),
@@ -18,12 +17,12 @@ class AStarNode<T extends AStarState<T>> implements Comparable<AStarNode<T>> {
 
   double get cost => depth + heuristic;
 
-  Iterable<AStarNode<T>> reconstructPath() {
-    final path = Queue<AStarNode<T>>();
-    path.addFirst(this);
+  Iterable<T> reconstructPath() {
+    final path = Queue<T>();
+    path.addFirst(this.state);
     var current = parent;
     while (current != null) {
-      path.addFirst(current);
+      path.addFirst(current.state);
       current = current.parent;
     }
     return path;
