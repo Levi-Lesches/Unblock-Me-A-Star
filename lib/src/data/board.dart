@@ -46,17 +46,17 @@ class Board extends AStarState<Board> {
 
   factory Board.test() => Board(
     blocks: [
-      Block(axis: BlockAxis.horizontal, length: 2, start: (x: 0, y: 0)),
-      Block(axis: BlockAxis.horizontal, length: 3, start: (x: 0, y: 1)),
-      Block(axis: BlockAxis.horizontal, length: 2, start: (x: 4, y: 3)),
-      Block(axis: BlockAxis.horizontal, length: 2, start: (x: 4, y: 4)),
-      Block(axis: BlockAxis.vertical, length: 2, start: (x: 0, y: 2)),
-      Block(axis: BlockAxis.vertical, length: 2, start: (x: 1, y: 2)),
-      Block(axis: BlockAxis.vertical, length: 2, start: (x: 1, y: 4)),
-      Block(axis: BlockAxis.vertical, length: 2, start: (x: 4, y: 1)),
-      Block(axis: BlockAxis.vertical, length: 3, start: (x: 5, y: 0)),
+      Block(index: 0, axis: BlockAxis.horizontal, length: 2, start: (x: 0, y: 0)),
+      Block(index: 1, axis: BlockAxis.horizontal, length: 3, start: (x: 0, y: 1)),
+      Block(index: 2, axis: BlockAxis.horizontal, length: 2, start: (x: 4, y: 3)),
+      Block(index: 3, axis: BlockAxis.horizontal, length: 2, start: (x: 4, y: 4)),
+      Block(index: 4, axis: BlockAxis.vertical, length: 2, start: (x: 0, y: 2)),
+      Block(index: 5, axis: BlockAxis.vertical, length: 2, start: (x: 1, y: 2)),
+      Block(index: 6, axis: BlockAxis.vertical, length: 2, start: (x: 1, y: 4)),
+      Block(index: 7, axis: BlockAxis.vertical, length: 2, start: (x: 4, y: 1)),
+      Block(index: 8, axis: BlockAxis.vertical, length: 3, start: (x: 5, y: 0)),
     ], 
-    redBlock: Block(length: 2, axis: BlockAxis.horizontal, start: (x: 2, y: 2)),
+    redBlock: Block(index: 9, length: 2, axis: BlockAxis.horizontal, start: (x: 2, y: 2)),
     size: 6,
     exit: (x: 5, y: 2),
   );

@@ -34,6 +34,7 @@ class BlockWidget extends StatelessWidget {
       color: isRed ? Colors.red : Colors.brown,
       border: Border.all(width: 4),
     ),
+    child: DefaultTextStyle(style: const TextStyle(), child: Center(child: Text(block.index.toString()))),
   );
 
   void onDragEnd() {

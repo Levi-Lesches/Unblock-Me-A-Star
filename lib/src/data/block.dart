@@ -9,7 +9,10 @@ class Block {
   // Top if vertical, Left if horizontal
   Coordinate start;
 
+  final int index;
+
   Block({
+    required this.index,
     required this.length,
     required this.axis,
     required this.start,
@@ -58,5 +61,5 @@ class Block {
 
   };
 
-  Block copy() => Block(axis: axis, length: length, start: start);
+  Block copy() => Block(axis: axis, length: length, start: start, index: index);
 }
