@@ -72,20 +72,21 @@ class Board extends AStarState<Board> {
     // For all blocks...
     final allBlocks = blocks + [redBlock];
     for (final (index, block) in allBlocks.enumerate) {
-      // For all possible offsets...
-      final forward = range(-1, -size);
-      final backward = range(1, size);
-      for (final spaces in forward + backward) {
-        // Try to move the block by that many spaces
-        if (!canMove(index, spaces)) continue;
-        final result = copy();
-        result.moveBlock(index, spaces);
-        result.transition = BoardTransition(
-          block: index == blocks.length ? "the red block" : "block $index",
-          numSpaces: spaces.abs(),
-          direction: block.getDirection(spaces),
-        );
-        yield result;
+      // For all directions...
+      for (final direction in [-1, 1]) {
+        // For all spaces in that direction...
+        for (final spaces in range(1, size)) {
+          // ...try to move the block by that many spaces
+          if (!canMove(index, direction * spaces)) break;
+          final newState = copy();
+          newState.moveBlock(index, direction * spaces);
+          newState.transition = BoardTransition(
+            block: index == blocks.length ? "the red block" : "block $index",
+            numSpaces: spaces,
+            direction: block.getDirection(direction),
+          );
+          yield newState;
+        }
       }
     }
   }
@@ -115,7 +116,6 @@ class Board extends AStarState<Board> {
 
   @override
   String hash() {
-    // Like [computeMatrix], but distinguishes the 
     final stringMatrix = <List<String>>[
       for (int i = 0; i < size; i++) [
         for (int j = 0; j < size; j++) 
