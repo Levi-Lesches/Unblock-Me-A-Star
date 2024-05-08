@@ -1,3 +1,5 @@
+import "dart:ffi";
+
 import "package:unblock/a_star.dart";
 import "package:unblock/data.dart";
 
@@ -135,9 +137,50 @@ class Board extends AStarState<Board> {
         row.join(),
     ].join("\n");
   }
-  
+
+  double checkCoordinates(List<Coordinate> coordinates){
+    var count = 0;
+    for(final coordinate in coordinates){
+      if (!isInBounds(coordinate)) continue;
+      for (final block in blocks) {
+          if (block.coordinates.contains(coordinate)) continue;
+          count++;
+        }
+    }
+    return count.toDouble();
+  }
+
   @override
-  double heuristic() => 0;
+  double heuristic() {
+    final coordsToCheck = <Coordinate>[];
+    switch (redBlock.axis){
+      case BlockAxis.horizontal : {
+        if(redBlock.start.x < exit.x){
+          for(final x in range(redBlock.start.x, size)){
+            coordsToCheck.add((x: x, y: redBlock.start.y));
+          }  
+        } else {
+          for(final x in range(0, redBlock.start.x)){
+            coordsToCheck.add((x: x, y: redBlock.start.y));
+          }
+        }
+      }
+      case BlockAxis.vertical : {
+        if(redBlock.start.y < exit.y){
+          for(final y in range(redBlock.start.y, size)){
+            coordsToCheck.add((x: redBlock.start.x, y: y));
+          }  
+        } else {
+          for(final y in range(0, redBlock.start.y)){
+            coordsToCheck.add((x: redBlock.start.x, y: y));
+          }
+        }
+      }
+    }
+    /// Plus one since we assume we are not at exit yet
+    return checkCoordinates(coordsToCheck) + 1;
+  }
+
 
   @override
   bool isGoal() => redBlock.coordinates.contains(exit);

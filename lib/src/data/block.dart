@@ -58,7 +58,11 @@ class Block {
       for (final (:x, :y) in coordinates)
         (x: x, y: y + steps),
     ],
+  };
 
+  Coordinate get end => switch (axis) {
+    BlockAxis.horizontal => (x: start.x + length - 1, y: start.y),
+    BlockAxis.vertical => (x: start.x, y: start.y + length - 1)
   };
 
   Block copy() => Block(axis: axis, length: length, start: start, index: index);
