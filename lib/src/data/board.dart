@@ -143,8 +143,7 @@ class Board extends AStarState<Board> {
     for(final coordinate in coordinates){
       if (!isInBounds(coordinate)) continue;
       for (final block in blocks) {
-          if (block.coordinates.contains(coordinate)) continue;
-          count++;
+          if (block.coordinates.contains(coordinate)) count++;
         }
     }
     return count.toDouble();
